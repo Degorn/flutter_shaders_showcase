@@ -20,4 +20,8 @@ flutter:
   assets:
     - assets/
   shaders:
+    - assets/shaders/flask_chart.frag
+    - assets/shaders/gradient.frag
+    - assets/shaders/mandelbrot_set.frag
+    - assets/shaders/rotating_card.frag
     - assets/shaders/shader.frag
