@@ -3,6 +3,7 @@ import 'package:shaders/screens/basic_gradient.dart';
 import 'package:shaders/screens/glow_screens.dart';
 import 'package:shaders/screens/mandelbrot_set.dart';
 import 'package:shaders/screens/new.dart';
+import 'package:shaders/screens/rotating_card.dart';
 
 class MenuScreen extends StatelessWidget {
   static const pages = {
@@ -10,6 +11,7 @@ class MenuScreen extends StatelessWidget {
     'Basic gradient': BasicGradientScreen(),
     'Glow screens': GlowScreensScreen(),
     'Mandelbrot set': MandelbrotSetScreen(),
+    'Rotating card': RotatingCardScreen(),
   };
 
   const MenuScreen({Key? key}) : super(key: key);
