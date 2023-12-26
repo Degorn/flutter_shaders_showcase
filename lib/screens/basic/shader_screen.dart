@@ -25,7 +25,6 @@ class _ShaderScreenState extends State<ShaderScreen> with SingleTickerProviderSt
   late final _ticker = createTicker((elapsed) => _time.value = elapsed.inMilliseconds / 1000);
   final _time = ValueNotifier(0.0);
   final _mouse = ValueNotifier(Offset.zero);
-
   final _images = <Image>[];
 
   @override
@@ -55,7 +54,7 @@ class _ShaderScreenState extends State<ShaderScreen> with SingleTickerProviderSt
 
     final futures = widget.imagePaths.map((path) => _getUiImage(path));
     _images.addAll(await Future.wait(futures));
-    return Future.wait(futures);
+    return _images;
   }
 
   @override
@@ -66,6 +65,7 @@ class _ShaderScreenState extends State<ShaderScreen> with SingleTickerProviderSt
         if (!imageSnapshot.hasData) {
           return const CircularProgressIndicator();
         }
+
         return LayoutBuilder(
           builder: (context, constraints) {
             return ShaderBuilder(
