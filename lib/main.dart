@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Image;
-
-import 'menu_screen.dart';
+import 'package:shaders/screens/basic/menu_screen.dart';
 
 void main() {
   runApp(const MyApp());
