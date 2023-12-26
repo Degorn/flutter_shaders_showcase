@@ -1,9 +1,6 @@
-import 'dart:async';
-import 'dart:developer';
-import 'dart:ui';
-
 import 'package:flutter/material.dart' hide Image;
-import 'package:flutter/services.dart';
+
+import 'menu_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,133 +12,120 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: ShaderHomePage(),
+      home: MenuScreen(),
     );
   }
 }
 
-class ShaderHomePage extends StatefulWidget {
-  const ShaderHomePage({super.key});
+// class ShaderHomePage extends StatefulWidget {
+//   const ShaderHomePage({super.key});
 
-  @override
-  State<ShaderHomePage> createState() => _ShaderHomePageState();
-}
+//   @override
+//   State<ShaderHomePage> createState() => _ShaderHomePageState();
+// }
 
-class _ShaderHomePageState extends State<ShaderHomePage> with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 1),
-  )..repeat();
+// class _ShaderHomePageState extends State<ShaderHomePage> with SingleTickerProviderStateMixin {
+//   late final _controller = AnimationController(
+//     vsync: this,
+//     duration: const Duration(seconds: 1),
+//   )..repeat();
 
-  int _startTime = 0;
-  double get _elapsedTimeInSeconds => (_startTime - DateTime.now().millisecondsSinceEpoch) / 1000;
+//   var _startTime = 0;
+//   double get _elapsedTimeInSeconds => (_startTime - DateTime.now().millisecondsSinceEpoch) / 1000;
 
-  @override
-  void dispose() {
-    _controller.dispose();
+//   @override
+//   void dispose() {
+//     _controller.dispose();
 
-    super.dispose();
-  }
+//     super.dispose();
+//   }
 
-  Future<FragmentShader> _loadShader(String shaderFileName) async {
-    try {
-      final program = await FragmentProgram.fromAsset('assets/shaders/$shaderFileName.frag');
-      return program.fragmentShader();
-    } catch (e) {
-      log(e.toString());
-      rethrow;
-    }
-  }
+//   Future<Image> _getUiImage(String imageAssetPath) async {
+//     final assetImageByteData = await rootBundle.load(imageAssetPath);
+//     final codec = await instantiateImageCodec(assetImageByteData.buffer.asUint8List());
+//     return (await codec.getNextFrame()).image;
+//   }
 
-  Future<Image> _getUiImage(String imageAssetPath) async {
-    final assetImageByteData = await rootBundle.load(imageAssetPath);
-    final codec = await instantiateImageCodec(assetImageByteData.buffer.asUint8List());
-    return (await codec.getNextFrame()).image;
-  }
+//   Offset _mouseOffset = Offset.zero;
 
-  Offset _mouseOffset = Offset.zero;
+//   @override
+//   Widget build(BuildContext context) {
+//     return ShaderBuilder(
+//       (context, shader, child) {
+//         _startTime = DateTime.now().millisecondsSinceEpoch;
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<FragmentShader>(
-      future: _loadShader('rotating_card'),
-      builder: (context, shaderSnapshot) {
-        if (!shaderSnapshot.hasData) {
-          return const CircularProgressIndicator();
-        }
+//         return FutureBuilder(
+//           future: _getUiImage('assets/noise.png'),
+//           builder: (context, imageSnapshot) {
+//             if (!imageSnapshot.hasData) {
+//               return const CircularProgressIndicator();
+//             }
 
-        final shader = shaderSnapshot.data!;
+//             return StatefulBuilder(
+//               builder: (context, setState) {
+//                 return Listener(
+//                   onPointerMove: (event) {
+//                     setState(() {
+//                       _mouseOffset = event.localPosition;
+//                     });
+//                   },
+//                   child: AnimatedBuilder(
+//                     animation: _controller,
+//                     builder: (context, child) {
+//                       return CustomPaint(
+//                         painter: ShaderPainter(
+//                           shader: shader,
+//                           time: _elapsedTimeInSeconds,
+//                           image: imageSnapshot.data!,
+//                           mouseOffset: _mouseOffset,
+//                         ),
+//                       );
+//                     },
+//                   ),
+//                 );
+//               },
+//             );
+//           },
+//         );
+//       },
+//       assetKey: 'assets/shaders/shader.frag',
+//     );
+//   }
+// }
 
-        _startTime = DateTime.now().millisecondsSinceEpoch;
+// class ShaderPainter extends CustomPainter {
+//   const ShaderPainter({
+//     required this.shader,
+//     required this.time,
+//     required this.image,
+//     required this.mouseOffset,
+//   });
 
-        return FutureBuilder(
-          future: _getUiImage('assets/noise.png'),
-          builder: (context, imageSnapshot) {
-            if (!imageSnapshot.hasData) {
-              return const CircularProgressIndicator();
-            }
+//   final FragmentShader shader;
+//   final double time;
+//   final Image image;
+//   final Offset mouseOffset;
 
-            return StatefulBuilder(
-              builder: (context, setState) {
-                return Listener(
-                  onPointerMove: (event) {
-                    setState(() {
-                      _mouseOffset = event.localPosition;
-                    });
-                  },
-                  child: AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return CustomPaint(
-                        painter: ShaderPainter(
-                          shader: shader,
-                          time: _elapsedTimeInSeconds,
-                          image: imageSnapshot.data!,
-                          mouseOffset: _mouseOffset,
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-}
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     shader.setFloat(0, size.width);
+//     shader.setFloat(1, size.height);
+//     shader.setFloat(2, time);
+//     // shader.setFloat(3, mouseOffset.dx);
+//     // shader.setFloat(4, mouseOffset.dy);
+//     // shader.setImageSampler(0, image);
+//     // shader.setImageSampler(1, image);
 
-class ShaderPainter extends CustomPainter {
-  final FragmentShader shader;
-  final double time;
-  final Image image;
-  final Offset mouseOffset;
+//     final paint = Paint();
+//     paint.shader = shader;
+//     canvas.drawRect(Offset.zero & size, paint);
+//   }
 
-  ShaderPainter({
-    required this.shader,
-    required this.time,
-    required this.image,
-    required this.mouseOffset,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    shader.setFloat(0, size.width);
-    shader.setFloat(1, size.height);
-    shader.setFloat(2, time);
-    shader.setFloat(3, mouseOffset.dx);
-    shader.setFloat(4, mouseOffset.dy);
-    shader.setImageSampler(0, image);
-    shader.setImageSampler(1, image);
-
-    final paint = Paint();
-    paint.shader = shader;
-    canvas.drawRect(Offset.zero & size, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
+//   @override
+//   bool shouldRepaint(ShaderPainter oldDelegate) =>
+//       shader != oldDelegate.shader ||
+//       time != oldDelegate.time ||
+//       image != oldDelegate.image ||
+//       mouseOffset != oldDelegate.mouseOffset;
+// }
