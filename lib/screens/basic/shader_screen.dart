@@ -49,7 +49,7 @@ class _ShaderScreenState extends State<ShaderScreen> with SingleTickerProviderSt
   }
 
   Future<List<Image>> _loadImages() async {
-    if (widget.imagePaths.isEmpty) {
+    if (widget.imagePaths.isEmpty || _images.isNotEmpty) {
       return [];
     }
 
